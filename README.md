@@ -11,7 +11,7 @@ This project is **not** affiliated with the Monroe Institute, **not** medical ca
 - **Learn** — six essays: the short version, how binaural beats work, the CIA paper, the science, a keepable protocol, and the Gateway tools (box, balloon, focus labels) treated as attention techniques.
 - **Practice** — six sessions: First Contact, Still Body (Focus 10 analogue), Wide Field (Focus 12), No Clock (Focus 15), Study Lock, Sleep Slope.
 - **Lab** — mix carrier pitch, beat frequency, noise bed, and duration yourself.
-- **Journal** — local-only debrief notes in this browser.
+- **Progress** — session history, attention ratings, streak and minute charts, kept on this device. Download a JSON backup to take it with you. No account.
 
 Stereo **headphones are required**. Speakers mix left and right in the air and cancel the trick.
 
@@ -49,4 +49,4 @@ Write three lines after sessions: body, mind, one image. Unwritten states get re
 
 ## Stack
 
-Next.js, TypeScript, Tailwind CSS, shadcn/ui. Audio is Web Audio API only — no files, no accounts, no server-side personal data.
+Next.js, TypeScript, Tailwind CSS, shadcn/ui. Audio is Web Audio API only — no accounts and no server-side personal data. History lives in the browser; export a backup from Progress.

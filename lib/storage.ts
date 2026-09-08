@@ -13,6 +13,13 @@ export type HemisphereState = {
   logs: SessionLog[]
 }
 
+export type BackupFile = {
+  version: 1
+  exportedAt: string
+  logs: SessionLog[]
+}
+
+export const MAX_LOGS = 500
 const KEY = "hemisphere:v1"
 
 const listeners = new Set<() => void>()
@@ -31,7 +38,13 @@ export function loadState(): HemisphereState {
       const raw = window.localStorage.getItem(KEY)
       if (raw) {
         const parsed = JSON.parse(raw) as HemisphereState
-        if (Array.isArray(parsed.logs)) memory = parsed
+        if (Array.isArray(parsed.logs)) {
+          memory = {
+            logs: parsed.logs
+              .map(coerceLog)
+              .filter((log): log is SessionLog => log !== null),
+          }
+        }
       }
     } catch {
       memory = emptyState
@@ -61,9 +74,43 @@ export function subscribe(listener: () => void) {
   return () => listeners.delete(listener)
 }
 
+function sortLogs(logs: SessionLog[]) {
+  return [...logs].sort(
+    (a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime()
+  )
+}
+
+function coerceLog(value: unknown): SessionLog | null {
+  if (!value || typeof value !== "object") return null
+  const raw = value as Partial<SessionLog>
+  if (typeof raw.id !== "string" || !raw.id) return null
+  if (typeof raw.sessionId !== "string") return null
+  if (typeof raw.sessionTitle !== "string") return null
+  if (typeof raw.startedAt !== "string" || Number.isNaN(new Date(raw.startedAt).getTime())) {
+    return null
+  }
+  if (typeof raw.durationSec !== "number" || !Number.isFinite(raw.durationSec)) return null
+  const rating =
+    raw.rating === null || raw.rating === undefined
+      ? null
+      : typeof raw.rating === "number" && raw.rating >= 1 && raw.rating <= 5
+        ? raw.rating
+        : null
+  return {
+    id: raw.id,
+    sessionId: raw.sessionId,
+    sessionTitle: raw.sessionTitle,
+    startedAt: raw.startedAt,
+    durationSec: Math.max(0, Math.round(raw.durationSec)),
+    completed: Boolean(raw.completed),
+    rating,
+    note: typeof raw.note === "string" ? raw.note : "",
+  }
+}
+
 export function addLog(entry: SessionLog) {
   const state = loadState()
-  saveState({ logs: [entry, ...state.logs].slice(0, 200) })
+  saveState({ logs: sortLogs([entry, ...state.logs]).slice(0, MAX_LOGS) })
 }
 
 export function updateLog(id: string, patch: Partial<SessionLog>) {
@@ -82,21 +129,55 @@ export function newId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
 }
 
-export function streakDays(logs: SessionLog[], now = new Date()) {
-  const days = new Set(
-    logs.map((log) => new Date(log.startedAt).toISOString().slice(0, 10))
-  )
-  let streak = 0
-  const cursor = new Date(now)
-  for (;;) {
-    const key = cursor.toISOString().slice(0, 10)
-    if (!days.has(key)) break
-    streak += 1
-    cursor.setUTCDate(cursor.getUTCDate() - 1)
+export function exportBackup(): BackupFile {
+  return {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    logs: loadState().logs,
   }
-  return streak
 }
 
-export function totalMinutes(logs: SessionLog[]) {
-  return Math.round(logs.reduce((sum, log) => sum + log.durationSec, 0) / 60)
+export function importBackup(raw: unknown): { added: number; skipped: number } {
+  const logs = extractLogs(raw)
+  if (logs.length === 0) {
+    throw new Error("That file has no Hemisphere sessions in it.")
+  }
+  const state = loadState()
+  const seen = new Set(state.logs.map((log) => log.id))
+  let added = 0
+  let skipped = 0
+  const merged = [...state.logs]
+  for (const log of logs) {
+    if (seen.has(log.id)) {
+      skipped += 1
+      continue
+    }
+    seen.add(log.id)
+    merged.push(normalizeLog(log))
+    added += 1
+  }
+  saveState({ logs: sortLogs(merged).slice(0, MAX_LOGS) })
+  return { added, skipped }
+}
+
+function extractLogs(raw: unknown): SessionLog[] {
+  const list = Array.isArray(raw)
+    ? raw
+    : raw && typeof raw === "object" && "logs" in raw && Array.isArray(raw.logs)
+      ? raw.logs
+      : []
+  return list.map(coerceLog).filter((log): log is SessionLog => log !== null)
+}
+
+function normalizeLog(log: SessionLog): SessionLog {
+  return {
+    id: log.id,
+    sessionId: log.sessionId,
+    sessionTitle: log.sessionTitle,
+    startedAt: new Date(log.startedAt).toISOString(),
+    durationSec: Math.max(0, Math.round(log.durationSec)),
+    completed: log.completed,
+    rating: log.rating,
+    note: log.note,
+  }
 }

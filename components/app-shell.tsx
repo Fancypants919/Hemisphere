@@ -4,9 +4,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   BookOpenText,
+  ChartNoAxesColumn,
   FlaskConical,
   Headphones,
-  NotebookPen,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -14,7 +14,7 @@ const links = [
   { href: "/learn", label: "Learn", icon: BookOpenText },
   { href: "/practice", label: "Practice", icon: Headphones },
   { href: "/lab", label: "Lab", icon: FlaskConical },
-  { href: "/journal", label: "Journal", icon: NotebookPen },
+  { href: "/journal", label: "Progress", icon: ChartNoAxesColumn },
 ]
 
 export function AppShell({ children }: { children: React.ReactNode }) {

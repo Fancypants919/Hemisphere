@@ -317,7 +317,7 @@ export function SessionPlayer({
                 rating,
               })
               setSaved(true)
-              toast.success("Saved to journal")
+              toast.success("Saved to progress")
             }}
           />
         )}
@@ -379,10 +379,10 @@ function CompletionCard({
       />
       <div className="mt-5 flex flex-wrap gap-2">
         <Button onClick={onSave} disabled={saved}>
-          {saved ? "Saved" : "Save to journal"}
+          {saved ? "Saved" : "Save to progress"}
         </Button>
         <Button variant="outline" asChild>
-          <Link href="/journal">Open journal</Link>
+          <Link href="/journal">See progress</Link>
         </Button>
         <Button variant="ghost" asChild>
           <Link href="/practice">Another session</Link>
