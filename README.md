@@ -15,6 +15,44 @@ This project is **not** affiliated with the Monroe Institute, **not** medical ca
 
 Stereo **headphones are required**. Speakers mix left and right in the air and cancel the trick.
 
+## Phone, laptop, and other devices
+
+The Cursor Preview (`127.0.0.1`) only works on this computer. Your phone cannot open that address.
+
+**GitHub is a good way to keep the code**, not a website you practice on. Put the project on GitHub, then host it so you get a normal `https://` link. Open that link on any phone or laptop.
+
+### 1. Put it on GitHub
+
+This project does not have a GitHub repository yet. Click **Create repo** in Cursor, then push `main`. After that, clone it anywhere you have Node.js:
+
+```bash
+git clone <your-repo-url>
+cd <repo>
+npm install
+npm run dev
+```
+
+### 2. Put it on the internet (this is what the phone uses)
+
+Next.js deploys cleanly on [Vercel](https://vercel.com) (free hobby plan):
+
+1. Create a GitHub repo (step 1).
+2. Sign in at Vercel with GitHub.
+3. **Add New Project** → import that repo → Deploy.
+4. You get a URL like `https://your-name.vercel.app`.
+
+Open that URL on your phone. Wired or Bluetooth **stereo** headphones. Safari or Chrome is fine. After the first visit: Share → **Add to Home Screen** (iPhone) or the browser menu → **Install app** (Android).
+
+GitHub Pages is a weaker fit here. This is a Next.js app, not a folder of static HTML files.
+
+### 3. History on a second device
+
+Progress is saved **in that browser**, not in GitHub and not in Vercel. Phone Chrome and laptop Chrome are two separate notebooks.
+
+To move history: Progress → **Download backup** on the first device, send yourself the `.json` file, then **Import** on the second. Do that when you switch phones too.
+
+A GitHub repo does **not** sync your sessions. It only stores the app itself.
+
 ## Run locally
 
 ```bash

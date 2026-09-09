@@ -27,6 +27,12 @@ export const metadata: Metadata = {
   },
   description:
     "Learn CIA Gateway / Hemi-Sync style hemisphere synchronization, then practice original binaural sessions in the browser.",
+  applicationName: "Hemisphere",
+  appleWebApp: {
+    capable: true,
+    title: "Hemisphere",
+    statusBarStyle: "black-translucent",
+  },
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -127,6 +127,16 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <section className="rounded-3xl border border-border/80 bg-card/60 p-6 sm:p-8">
+        <h2 className="font-heading text-3xl tracking-tight">Phone and other devices</h2>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+          This Preview address is only this computer. GitHub is the right place to keep the
+          code. A host like Vercel turns that repo into an https link you open on your phone
+          with stereo headphones. Progress stays in each browser — download a backup on one
+          device, import it on the other. Steps are in the README.
+        </p>
+      </section>
     </div>
   )
 }
